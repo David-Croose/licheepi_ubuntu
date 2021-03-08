@@ -19,7 +19,12 @@ tar -xf ubuntu-base-16.04.6-base-armhf.tar.gz -C mnt
 
 echo "========================================================================"
 echo "preparing the tty..."
-ln -s $fspath/lib/systemd/system/getty@.service $fspath/etc/systemd/system/getty.target.wants/getty@ttyS0.service
+cat>$fspath/etc/init/ttyS0.conf<<EOF
+start on stopped rc or RUNLEVEL=[12345]
+stop on RUNLEVEL [!12345]
+respawn
+exec /sbin/getty -L 115200 ttyS0 vt102
+EOF
 
 echo "========================================================================"
 echo "Please enter your WIFI AP name:"
